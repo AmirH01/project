@@ -44,22 +44,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:text="@string/confirm_information"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionET" />
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/selectImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUpcomingMedication"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/selectImage"
         app:layout_constraintTop_toBottomOf="@+id/submitButton"
-        android:contentDescription="@string/selected_image" />
+        tools:layout_editor_absoluteX="1dp" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/image"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/selectImage"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/submitButton"-->
+<!--        android:contentDescription="@string/selected_image" />-->
 
     <Button
         android:id="@+id/selectImage"
@@ -72,6 +82,15 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
+
+    <Button
+        android:id="@+id/BMedLogs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Med Logs"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 

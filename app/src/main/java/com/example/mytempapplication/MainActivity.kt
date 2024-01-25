@@ -1,5 +1,6 @@
 package com.example.mytempapplication
 
+import android.app.Activity
 import android.app.AlarmManager.*
 import android.app.AlertDialog
 import android.app.NotificationChannel
@@ -9,15 +10,19 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult.*
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytempapplication.databinding.ActivityMainBinding
 import com.example.mytempapplication.imageprocessor.ImageProcessor
+import com.example.mytempapplication.medicationmanagement.NotificationItem
+import com.example.mytempapplication.medicationmanagement.NotificationItemAdapter
 import com.example.mytempapplication.notificationscheduling.NotificationScheduler
 import java.util.Calendar
 import java.util.Date
@@ -28,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var uri: String
+    private lateinit var notificationItemAdapter: NotificationItemAdapter
 
     private var medicationName: String? = null
     private var frequency: String? = null
@@ -38,15 +44,51 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        notificationItemAdapter = NotificationItemAdapter
+
+        binding.rvUpcomingMedication.apply {
+            adapter = notificationItemAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity)
+        }
+
+        val startForResult = registerForActivityResult(
+            StartActivityForResult()
+        ) { result: ActivityResult ->
+            if (result.resultCode != RESULT_CANCELED) {
+                if (result.resultCode == RESULT_OK) {
+                    val intent = result.data
+                    Log.d("RETURNED INTENT HOURS", intent.toString())
+                    val hours = intent?.getIntegerArrayListExtra("hours")
+                    val minutes = intent?.getIntegerArrayListExtra("minutes")
+                    val len = hours?.size?.minus(1)
+                    Log.d("HOURS", hours.toString())
+                    Log.d("MINUTES", minutes.toString())
+                    for (i in 0..len!!) {
+                        notificationItemAdapter.addNotificationItem(
+                            NotificationItem(
+                                intent.getStringExtra("Medication Name").toString(),
+                                intent.getStringExtra("Description").toString(),
+                                hours[i],
+                                minutes?.get(i) ?: 0,
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
         createNotificationChannel()
         binding.submitButton.setOnClickListener {
 //            scheduleNotification()
-            Intent(this, NotificationScheduler::class.java).also {
-                it.putExtra("Medication Name", binding.medNameET.text.toString() ?: "No name")
-                it.putExtra("Frequency", binding.frequencyET.text.toString() ?: "No frequency")
-                it.putExtra("Description", binding.descriptionET.text.toString() ?: "No description")
-                startActivity(it)
-            }
+//            startActivityForResult()
+
+            startForResult.launch(Intent(this, NotificationScheduler::class.java).also {
+                it.putExtra("Medication Name", binding.medNameET.text.toString())
+                it.putExtra("Frequency", binding.frequencyET.text.toString())
+                it.putExtra("Description", binding.descriptionET.text.toString())
+//                startActivity(it)
+            })
+
 
         }
 
@@ -74,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-                binding.image.setImageURI(it)
+//                binding.image.setImageURI(it)
             }
         )
         return imageSelector

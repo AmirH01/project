@@ -1,5 +1,6 @@
 package com.example.mytempapplication.notificationscheduling
 
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
@@ -14,8 +15,13 @@ import com.example.mytempapplication.descriptionExtra
 import com.example.mytempapplication.frequencyExtra
 import com.example.mytempapplication.medicationNameExtra
 import java.util.Calendar
+import kotlin.properties.Delegates
 
 class NotificationScheduler : AppCompatActivity(), NotificationAdapter.OnTimeSelectedListener {
+
+    private lateinit var medicationName: String
+    private var numberOfNotifications by Delegates.notNull<Int>()
+    private lateinit var description: String
 
     private val list = mutableListOf<Notification>()
 
@@ -25,9 +31,9 @@ class NotificationScheduler : AppCompatActivity(), NotificationAdapter.OnTimeSel
         val view = binding.root
         setContentView(view)
 
-        val medicationName = this.intent.getStringExtra("Medication Name")
-        val numberOfNotifications = this.intent.getStringExtra("Frequency")?.toInt() ?: 0
-        val description = this.intent.getStringExtra("Description")
+        medicationName = this.intent.getStringExtra("Medication Name") ?: "No Medication Name"
+        numberOfNotifications = this.intent.getStringExtra("Frequency")?.toInt() ?: 0
+        description = this.intent.getStringExtra("Description")?: "No Description Given"
 
         populateList(numberOfNotifications)
 
@@ -71,14 +77,23 @@ class NotificationScheduler : AppCompatActivity(), NotificationAdapter.OnTimeSel
                 )
                 alarmManager.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    time,
+                    time+oneDay(),
                     86_400_000,
                     repeatingPendingIntent
                 )
             }
+            val returnIntent = Intent().also { intent ->
+                intent.putExtra("Medication Name", medicationName)
+                intent.putExtra("Description", description)
+                intent.putIntegerArrayListExtra("hours", ArrayList(list.map{it.hour}))
+                intent.putIntegerArrayListExtra("minutes", ArrayList(list.map{it.minute}))
+            }
+            setResult(Activity.RESULT_OK, returnIntent)
             finish()
         }
     }
+
+    private fun oneDay(): Long = 86_400_000
 
     private fun populateList(frequency: Int) {
         for (i in 1..frequency) {
@@ -101,4 +116,15 @@ class NotificationScheduler : AppCompatActivity(), NotificationAdapter.OnTimeSel
     override fun onTimeSelected(position: Int, hour: Int, minute: Int) {
         list[position] = list[position].copy(hour = hour, minute = minute)
     }
+
+//    override fun finish() {
+//        val returnIntent = Intent().also { intent ->
+//            intent.putExtra("Medication Name", medicationName)
+//            intent.putExtra("Description", description)
+//            intent.putIntegerArrayListExtra("hours", ArrayList(list.map{it.hour}))
+//            intent.putIntegerArrayListExtra("minutes", ArrayList(list.map{it.minute}))
+//        }
+//        setResult(Activity.RESULT_OK, returnIntent)
+//        super.finish()
+//    }
 }
