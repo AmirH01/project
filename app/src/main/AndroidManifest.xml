@@ -17,7 +17,11 @@
         android:theme="@style/Theme.MyTempApplication"
         tools:targetApi="31">
         <activity
-            android:name=".notificationscheduling.NotificationScheduler"
+            android:name=".notificationscheduling.NotificationSchedulerActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".medicationmanagement.logging.MedicationLoggerActivity"
             android:exported="false" />
 
         <receiver

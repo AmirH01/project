@@ -52,4 +52,5 @@
     <string name="notification">Notification</string>
     <string name="confirm_information">Confirm Information</string>
     <string name="selected_image">Selected Image</string>
+    <string name="my_medication_history">My Medication History</string>
 </resources>

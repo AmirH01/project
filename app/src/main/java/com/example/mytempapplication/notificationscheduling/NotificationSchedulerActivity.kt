@@ -12,12 +12,11 @@ import com.example.mytempapplication.NotificationBroadcastReceiver
 import com.example.mytempapplication.NotificationBroadcastReceiver.Companion.getAndIncrementNotificationId
 import com.example.mytempapplication.databinding.ActivityNotificationSchedulerBinding
 import com.example.mytempapplication.descriptionExtra
-import com.example.mytempapplication.frequencyExtra
 import com.example.mytempapplication.medicationNameExtra
 import java.util.Calendar
 import kotlin.properties.Delegates
 
-class NotificationScheduler : AppCompatActivity(), NotificationAdapter.OnTimeSelectedListener {
+class NotificationSchedulerActivity : AppCompatActivity(), NotificationAdapter.OnTimeSelectedListener {
 
     private lateinit var medicationName: String
     private var numberOfNotifications by Delegates.notNull<Int>()

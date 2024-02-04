@@ -1,4 +1,4 @@
-package com.example.mytempapplication.medicationmanagement
+package com.example.mytempapplication.medicationmanagement.notifying
 
 data class NotificationItem(
     val medication: String,

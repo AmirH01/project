@@ -1,6 +1,5 @@
 package com.example.mytempapplication
 
-import android.app.Activity
 import android.app.AlarmManager.*
 import android.app.AlertDialog
 import android.app.NotificationChannel
@@ -21,9 +20,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytempapplication.databinding.ActivityMainBinding
 import com.example.mytempapplication.imageprocessor.ImageProcessor
-import com.example.mytempapplication.medicationmanagement.NotificationItem
-import com.example.mytempapplication.medicationmanagement.NotificationItemAdapter
-import com.example.mytempapplication.notificationscheduling.NotificationScheduler
+import com.example.mytempapplication.medicationmanagement.logging.MedicationLoggerActivity
+import com.example.mytempapplication.medicationmanagement.notifying.NotificationItem
+import com.example.mytempapplication.medicationmanagement.notifying.NotificationItemAdapter
+import com.example.mytempapplication.notificationscheduling.NotificationSchedulerActivity
 import java.util.Calendar
 import java.util.Date
 
@@ -77,12 +77,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.BMedLogs.setOnClickListener {
+            Intent(this, MedicationLoggerActivity::class.java).also {
+                startActivity(it)
+            }
+
+        }
+
         createNotificationChannel()
         binding.submitButton.setOnClickListener {
 //            scheduleNotification()
 //            startActivityForResult()
 
-            startForResult.launch(Intent(this, NotificationScheduler::class.java).also {
+            startForResult.launch(Intent(this, NotificationSchedulerActivity::class.java).also {
                 it.putExtra("Medication Name", binding.medNameET.text.toString())
                 it.putExtra("Frequency", binding.frequencyET.text.toString())
                 it.putExtra("Description", binding.descriptionET.text.toString())
