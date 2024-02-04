@@ -73,6 +73,14 @@ object NotificationItemAdapter: RecyclerView.Adapter<NotificationItemAdapter.Not
                 Log.d("LIST SIZE AFTER NOTIFYING:", notifications.size.toString())
 
             }
+            bCancelled.setOnClickListener {
+                notifications.removeAt(position)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, notifications.size)
+                Log.d("LIST SIZE AFTER REMOVING:", notifications.size.toString())
+                Log.d("POSITION REMOVED:", position.toString())
+                Log.d("LIST SIZE AFTER NOTIFYING:", notifications.size.toString())
+            }
         }
     }
 
