@@ -3,7 +3,7 @@ package com.example.mytempapplication.imageprocessor
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.example.mytempapplication.databinding.ActivityMainBinding
+import com.example.mytempapplication.databinding.ActivityMedicationInformationBinding
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -14,10 +14,10 @@ import kotlinx.coroutines.runBlocking
 import java.lang.Exception
 
 
-class ImageProcessor(
+class ImageProcessorMedicationInformation(
     private val applicationContext: Context,
     private val uri: Uri,
-    private val binding: ActivityMainBinding
+    private val binding: ActivityMedicationInformationBinding
 ) {
 
     companion object {
@@ -40,18 +40,18 @@ class ImageProcessor(
     operator fun invoke() {
         runBlocking {
             async {
-                val image = InputImage.fromFilePath(applicationContext, uri)
+                val image = InputImage.fromFilePath(applicationContext, this@ImageProcessorMedicationInformation.uri)
                 text = recognizer.process(image).addOnSuccessListener {
                     Log.i("SUCCESSFUL", it.text)
+
                     val medicationName = getMedicationName()
                     val frequency = getFrequency().toString()
 
                     Log.d("MEDICATION NAME", medicationName)
-                    binding.medNameET.setText(medicationName)
+//                    binding.medNameET.setText(medicationName)
 
                     Log.d("FREQUENCY", frequency)
-                    binding.frequencyET.setText(frequency)
-
+//                    binding.frequencyET.setText(frequency)
                 }.addOnFailureListener {
                     Log.e("FAILED", it.message.toString())
                 }
@@ -59,7 +59,7 @@ class ImageProcessor(
         }
     }
 
-    private fun getFrequency(): Int {
+    fun getFrequency(): Int {
         for (block in text.result.textBlocks) {
             for (line in block.lines) {
                 val elements: List<String> = line.elements.map { it.text.lowercase() }
@@ -81,7 +81,7 @@ class ImageProcessor(
         return 0
     }
 
-    private fun getMedicationName(): String {
+    fun getMedicationName(): String {
         try {
             for (block in text.result.textBlocks) {
                 for (line in block.lines) {

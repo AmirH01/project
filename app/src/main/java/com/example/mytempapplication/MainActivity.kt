@@ -1,10 +1,8 @@
 package com.example.mytempapplication
 
-import android.app.AlarmManager.*
 import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context.*
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -19,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mytempapplication.databinding.ActivityMainBinding
-import com.example.mytempapplication.imageprocessor.ImageProcessor
+import com.example.mytempapplication.imageprocessor.ImageProcessorMain
 import com.example.mytempapplication.medicationmanagement.logging.MedicationLoggerActivity
 import com.example.mytempapplication.medicationmanagement.notifying.NotificationItem
 import com.example.mytempapplication.medicationmanagement.notifying.NotificationItemAdapter
@@ -29,7 +27,6 @@ import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var uri: String
@@ -37,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private var medicationName: String? = null
     private var frequency: String? = null
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,13 +49,14 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
+
         val startForResult = registerForActivityResult(
             StartActivityForResult()
         ) { result: ActivityResult ->
             if (result.resultCode != RESULT_CANCELED) {
                 if (result.resultCode == RESULT_OK) {
                     val intent = result.data
-                    Log.d("RETURNED INTENT HOURS", intent.toString())
+//                    Log.d("RETURNED INTENT HOURS", intent.toString())
                     val hours = intent?.getIntegerArrayListExtra("hours")
                     val minutes = intent?.getIntegerArrayListExtra("minutes")
                     val len = hours?.size?.minus(1)
@@ -99,9 +98,16 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        binding.BMedicationInformation.setOnClickListener {
+            startForResult.launch(Intent(this, MedicationInformationActivity::class.java))
+//                startActivity(it)
+
+        }
+
         val imageSelector = createImageSelector()
-        binding.selectImage.setOnClickListener {
+        binding.BScanImage.setOnClickListener {
             getUriFromSelectedImage(imageSelector)
+
         }
 
     }
@@ -118,7 +124,7 @@ class MainActivity : AppCompatActivity() {
             ActivityResultContracts.GetContent(),
             ActivityResultCallback {
                 it?.let { uri ->
-                    ImageProcessor(applicationContext, uri, binding).also { imageProcessor ->
+                    ImageProcessorMain(applicationContext, uri, binding).also { imageProcessor ->
                         imageProcessor()
                     }
 

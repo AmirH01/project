@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/selectImage"
+        app:layout_constraintBottom_toTopOf="@+id/BScanImage"
         app:layout_constraintTop_toBottomOf="@+id/submitButton"
         tools:layout_editor_absoluteX="1dp" />
 
@@ -71,26 +71,34 @@
 <!--        app:layout_constraintTop_toBottomOf="@+id/submitButton"-->
 <!--        android:contentDescription="@string/selected_image" />-->
 
+
     <Button
-        android:id="@+id/selectImage"
+        android:id="@+id/BScanImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/select_image"
+        android:text="@string/scan_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/BMedLogs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Med Logs"
+        android:text="My Logs"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/BMedicationInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Med Info"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 

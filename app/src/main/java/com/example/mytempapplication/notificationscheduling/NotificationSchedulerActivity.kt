@@ -81,12 +81,17 @@ class NotificationSchedulerActivity : AppCompatActivity(), NotificationAdapter.O
                     repeatingPendingIntent
                 )
             }
+            val hours = ArrayList(list.map{it.hour})
+
             val returnIntent = Intent().also { intent ->
                 intent.putExtra("Medication Name", medicationName)
                 intent.putExtra("Description", description)
-                intent.putIntegerArrayListExtra("hours", ArrayList(list.map{it.hour}))
+                intent.putIntegerArrayListExtra("hours", hours)
                 intent.putIntegerArrayListExtra("minutes", ArrayList(list.map{it.minute}))
             }
+            Log.wtf("MEDICATION NAME:", medicationName)
+            Log.wtf("DESCRIPTION:", description)
+            Log.wtf("hours:", hours.size.toString())
             setResult(Activity.RESULT_OK, returnIntent)
             finish()
         }
