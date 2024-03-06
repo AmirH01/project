@@ -107,7 +107,6 @@ class MainActivity : AppCompatActivity() {
         val imageSelector = createImageSelector()
         binding.BScanImage.setOnClickListener {
             getUriFromSelectedImage(imageSelector)
-
         }
 
     }

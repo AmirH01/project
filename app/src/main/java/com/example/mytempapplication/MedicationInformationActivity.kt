@@ -1,31 +1,23 @@
 package com.example.mytempapplication
 
 import android.app.Activity
-import android.app.Activity.RESULT_CANCELED
-import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import com.example.mytempapplication.databinding.ActivityMedicationInformationBinding
+import com.example.mytempapplication.imageprocessor.ImageProcessorMedicationInformation
 import com.example.mytempapplication.notificationscheduling.NotificationSchedulerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.lang.Exception
-import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration.Companion.hours
 
 class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
     private val apiClient: ApiClient = ApiClient
@@ -35,10 +27,11 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
     private var minutes: ArrayList<Int> = ArrayList()
     private var hours: ArrayList<Int> = ArrayList()
     private var medicationDosageDesc: String = ""
+    private lateinit var binding: ActivityMedicationInformationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMedicationInformationBinding.inflate(layoutInflater)
+        binding = ActivityMedicationInformationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
@@ -97,7 +90,6 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
                 })
 
                 bConfirmSchedule.visibility = View.VISIBLE
-
             }
 
             bConfirmSchedule.setOnClickListener {
@@ -118,7 +110,36 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
                 }
                 finish()
             }
+
+            val imageSelector = createImageSelector()
+            bScanImage.setOnClickListener {
+                getUriFromSelectedImage(imageSelector)
+            }
+
         }
+    }
+
+    private fun getUriFromSelectedImage(imageSelector: ActivityResultLauncher<String>) {
+        imageSelector.launch("image/*")
+    }
+
+    private fun createImageSelector(): ActivityResultLauncher<String> {
+//        val intent = Intent(Intent.ACTION_PICK)
+//        intent.type = "image/*"
+
+        val imageSelector = registerForActivityResult(
+            ActivityResultContracts.GetContent(),
+            ActivityResultCallback {
+                it?.let { uri ->
+                    ImageProcessorMedicationInformation(applicationContext, uri, binding).also { imageProcessorMedInfo ->
+                        imageProcessorMedInfo()
+                    }
+
+                }
+//                binding.image.setImageURI(it)
+            }
+        )
+        return imageSelector
     }
 
 

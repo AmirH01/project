@@ -135,4 +135,13 @@
         android:visibility="gone"
         />
 
+    <Button
+        android:id="@+id/bScanImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Scanner"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
