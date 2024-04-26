@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mytempapplication.R
 import com.example.mytempapplication.databinding.ItemLoggedMedicationBinding
-import com.example.mytempapplication.medicationmanagement.notifying.NotificationItemAdapter
 
-object MedicationItemAdapter : RecyclerView.Adapter<MedicationItemAdapter.LoggedMedicationItemViewHolder>() {
+object MedicationItemAdapter :
+    RecyclerView.Adapter<MedicationItemAdapter.LoggedMedicationItemViewHolder>() {
 
     private val log = mutableListOf<MedicationItem>()
-    var count = 1
+    private var count = 1
+
     class LoggedMedicationItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ItemLoggedMedicationBinding.bind(itemView)
     }
@@ -29,6 +30,7 @@ object MedicationItemAdapter : RecyclerView.Adapter<MedicationItemAdapter.Logged
             )
         )
     }
+
     override fun getItemCount(): Int {
         return log.size
     }
@@ -41,13 +43,18 @@ object MedicationItemAdapter : RecyclerView.Adapter<MedicationItemAdapter.Logged
         }
     }
 
-    fun addMedicationItem(medicationItem: MedicationItem) {
-        log.add(medicationItem)
+    fun addMedicationItemAndNotify(medicationItem: MedicationItem) {
+        addMedication(medicationItem)
         print(log)
         notifyItemInserted(log.size - 1)
 
 //        notifyItemRangeChanged(log.size - 1, 1)
         Log.d("ADDING MEDICATION ITEM", count.toString())
         count++
+    }
+
+    fun addMedication(medicationItem: MedicationItem) {
+        log.add(medicationItem)
+
     }
 }

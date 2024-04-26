@@ -1,4 +1,4 @@
-package com.example.mytempapplication
+package com.example.mytempapplication.medicationinformation
 
 import kotlinx.serialization.Serializable
 

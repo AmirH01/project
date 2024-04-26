@@ -1,4 +1,4 @@
-package com.example.mytempapplication
+package com.example.mytempapplication.medicationinformation
 
 import android.app.Activity
 import android.content.Intent
@@ -38,57 +38,67 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
         with(binding) {
 
             searchButton.setOnClickListener {
-                launch {
-                    val apiMedicineResponse = apiClient.get(binding.searchBarET.text.toString())
-                    apiMedicineResponse?.let {
-                        with(binding) {
-                            textViewMedName.text = it.name
-                            name = it.name
-                            textViewMedDetails.text = it.hasPart[0].description
-                        }
-                        var count = 0
-                        for (part in apiMedicineResponse.hasPart) {
-                            count++
-                            Log.d("OUTER HASPART:", "$count")
-                            if (part.headline.lowercase().contains("how and when to")) {
-                                medicationDosageDesc = "The NHS states the following advice about dosage information: \n${part.description}"
-                                Log.d("PART DESCRIPTION", part.description)
-                                val regex = "\\d+ [a-zA-Z\\s]*day"
-                                val match = Regex(regex).find(part.description)
-                                match?.let { matchResult ->
-                                    dosage = try {
-                                        matchResult.value[0].digitToInt()
-                                    } catch (e: Exception) {
-                                        0
+                Log.d("BUTTON", "CLICKED")
+                if (!binding.searchBarET.text?.isEmpty()!!) {
+                    Log.d("SEARCH BAR", "NOT EMPTY")
+                    launch {
+                        val apiMedicineResponse = apiClient.get(binding.searchBarET.text.toString())
+                        Log.d("RESPONSE", "IS NOT NULL")
+                        apiMedicineResponse?.let {
+                            Log.d("APIMEDICINEREPONSE", "IS NOT NULL")
+                            with(binding) {
+                                textViewMedName.text = it.name
+                                name = it.name
+                                textViewMedDetails.text = it.hasPart[0].description
+                            }
+                            var count = 0
+                            for (part in apiMedicineResponse.hasPart) {
+                                count++
+                                Log.d("OUTER HASPART:", "$count")
+                                if (part.headline.lowercase().contains("how and when to")) {
+                                    medicationDosageDesc =
+                                        "The NHS states the following advice about dosage information: \n${part.description}"
+                                    Log.d("PART DESCRIPTION", part.description)
+                                    val regex = "\\d+ [a-zA-Z\\s]*day"
+                                    val match = Regex(regex).find(part.description)
+                                    match?.let { matchResult ->
+                                        dosage = try {
+                                            matchResult.value[0].digitToInt()
+                                        } catch (e: Exception) {
+                                            0
+                                        }
                                     }
+                                    Log.d("REGEX FOUND:", "${match?.value?.get(0)}")
+                                    Log.d("REGEX FOUND:", "${match?.value?.get(0)}")
                                 }
-                                Log.d("REGEX FOUND:", "${match?.value?.get(0)}")
-                                Log.d("REGEX FOUND:", "${match?.value?.get(0)}")
+                                if (dosage > 0) {
+                                    break
+                                }
                             }
-                            if (dosage > 0) {
-                                break
+                            if (medicationDosageDesc.isEmpty()) {
+                                TVdosageInfo.text = "No clear medication regimen detected"
+                            } else {
+                                TVdosageInfo.text = medicationDosageDesc
+                                bReminder.visibility = View.VISIBLE
                             }
-                        }
-                        if (medicationDosageDesc.isEmpty()){
-                            TVdosageInfo.text = "No clear medication regimen detected"
-                        }
-                        else{
-                            TVdosageInfo.text = medicationDosageDesc
-                            bReminder.visibility = View.VISIBLE
-                        }
                             TVdosageInfo.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
 
             val startForResult = activityCallback()
-            bReminder.setOnClickListener {
+            bReminder.setOnClickListener { view ->
 
-                startForResult.launch(Intent(this@MedicationInformationActivity, NotificationSchedulerActivity::class.java).also {
-                    it.putExtra("Medication Name", name)
-                    it.putExtra("Frequency", dosage.toString())
-                })
-
+                startForResult.launch(
+                    Intent(
+                        this@MedicationInformationActivity,
+                        NotificationSchedulerActivity::class.java
+                    ).also { intent ->
+                        intent.putExtra("Medication Name", name)
+                        intent.putExtra("Frequency", dosage.toString())
+                    })
+                view.visibility = View.GONE
                 bConfirmSchedule.visibility = View.VISIBLE
             }
 
@@ -131,7 +141,11 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
             ActivityResultContracts.GetContent(),
             ActivityResultCallback {
                 it?.let { uri ->
-                    ImageProcessorMedicationInformation(applicationContext, uri, binding).also { imageProcessorMedInfo ->
+                    ImageProcessorMedicationInformation(
+                        applicationContext,
+                        uri,
+                        binding
+                    ).also { imageProcessorMedInfo ->
                         imageProcessorMedInfo()
                     }
 
@@ -145,7 +159,7 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (name != null){
+        if (name != null) {
             val returnIntent = Intent().also { intent ->
                 intent.putExtra("Medication Name", name)
                 intent.putExtra("Description", "")
@@ -153,7 +167,7 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
                 intent.putIntegerArrayListExtra("minutes", minutes)
             }
             setResult(Activity.RESULT_OK, returnIntent)
-        }else{
+        } else {
             setResult(Activity.RESULT_CANCELED)
         }
         super.onBackPressed()
@@ -188,22 +202,6 @@ class MedicationInformationActivity : AppCompatActivity(), CoroutineScope {
         Log.d("minutes size", minutes.size.toString())
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //

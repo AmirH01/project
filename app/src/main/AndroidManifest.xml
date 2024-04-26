@@ -24,7 +24,7 @@
             android:name=".medicationmanagement.logging.MedicationLoggerActivity"
             android:exported="false" />
         <activity
-            android:name=".MedicationInformationActivity"
+            android:name=".medicationinformation.MedicationInformationActivity"
             android:exported="false" />
 
         <receiver

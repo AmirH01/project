@@ -1,4 +1,4 @@
-package com.example.mytempapplication
+package com.example.mytempapplication.medicationinformation
 
 object HttpRoutes {
     private const val BASE_URL = "https://api.nhs.uk"

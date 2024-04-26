@@ -48,7 +48,7 @@ class ImageProcessorMedicationInformation(
                     val frequency = getFrequency().toString()
 
                     Log.d("MEDICATION NAME", medicationName)
-                    binding.searchBarET.setText(medicationName)
+                    binding.searchBarET.setText(medicationName.replaceFirstChar{char -> char.titlecase()})
 
                     Log.d("FREQUENCY", frequency)
 //                    binding.frequencyET.setText(frequency)

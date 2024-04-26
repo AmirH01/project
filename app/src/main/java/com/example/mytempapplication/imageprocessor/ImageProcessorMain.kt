@@ -3,6 +3,7 @@ package com.example.mytempapplication.imageprocessor
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.text.capitalize
 import com.example.mytempapplication.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
@@ -40,6 +41,7 @@ class ImageProcessorMain(
     operator fun invoke() {
         runBlocking {
             async {
+                Log.d("URI VALUE", uri.toString())
                 val image = InputImage.fromFilePath(applicationContext, this@ImageProcessorMain.uri)
                 text = recognizer.process(image).addOnSuccessListener {
                     Log.i("SUCCESSFUL", it.text)
@@ -48,7 +50,7 @@ class ImageProcessorMain(
                     val frequency = getFrequency().toString()
 
                     Log.d("MEDICATION NAME", medicationName)
-                    binding.medNameET.setText(medicationName)
+                    binding.medNameET.setText(medicationName.replaceFirstChar{char -> char.titlecase()})
 
                     Log.d("FREQUENCY", frequency)
                     binding.frequencyET.setText(frequency)
